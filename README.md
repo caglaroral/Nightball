@@ -3,6 +3,8 @@
 A Haxball-style 2D football game for players on the same Wi-Fi. No server needed: one device
 hosts a room and the others find it on the local network and join.
 
+The plan for the Play Store release with ads is in [docs/release-plan.md](docs/release-plan.md).
+
 The game is built with Godot 4.7 and lives in `godot/`. The first version, written in Java with
 libGDX, is kept on the [`libgdx`](../../tree/libgdx) branch.
 
