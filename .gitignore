@@ -1,2 +1,3 @@
 dist/
 godot/.godot/
+*.code-workspace
