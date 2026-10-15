@@ -1,0 +1,29 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        google()
+    }
+    dependencies {
+        if (findProject(':android') != null) {
+            classpath "com.android.tools.build:gradle:$androidPluginVersion"
+        }
+    }
+}
+
+allprojects {
+    version = '0.1.0'
+    ext.appName = 'Nightball'
+    repositories {
+        mavenCentral()
+        google()
+    }
+}
+
+configure(subprojects.findAll { it.name != 'android' }) {
+    apply plugin: 'java-library'
+    // Java 8 bytecode keeps core usable on Android and, later, on iOS (RoboVM).
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.release = 8
+    }
+}
