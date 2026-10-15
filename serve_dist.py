@@ -36,7 +36,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 def main():
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
     if not os.path.isdir(DIST):
-        sys.exit("dist/ does not exist yet; build it with ./gradlew lwjgl3:packageWinX64")
+        sys.exit("dist/ does not exist yet; build it with godot/tools/export_all.sh")
     handler = functools.partial(Handler, directory=DIST)
     server = http.server.ThreadingHTTPServer(("0.0.0.0", port), handler)
     for address in lan_addresses():

@@ -3,13 +3,10 @@
 A Haxball-style 2D football game for players on the same Wi-Fi. No server needed: one device
 hosts a room and the others find it on the local network and join.
 
-There are two versions in this repository:
+The game is built with Godot 4.7 and lives in `godot/`. The first version, written in Java with
+libGDX, is kept on the [`libgdx`](../../tree/libgdx) branch.
 
-- **`godot/`**: the current version, built with Godot 4.7.
-- **`core/`, `lwjgl3/`, `android/`**: the first version, built with libGDX (Java). It still
-  builds, but new work happens in the Godot version.
-
-## Godot version
+## Running
 
 Requires the Godot 4.7 editor (the commands below assume it is at `~/Godot/godot`).
 
@@ -75,30 +72,3 @@ packages. Installing the APK requires allowing installs from unknown sources on 
 The Windows package needs no Java or other runtime. On first launch, Windows Firewall asks for
 network access: allow it on private networks, or room discovery will not work. Because the exe
 is unsigned, SmartScreen may show an "Unknown publisher" warning ("More info" → "Run anyway").
-
-## libGDX version
-
-| Module | Contents |
-|---|---|
-| `core` | The whole game: physics, match rules, networking, UI |
-| `lwjgl3` | Desktop launcher (Windows / Linux / macOS) |
-| `android` | Android launcher. Only built when an Android SDK is configured. |
-
-```bash
-./gradlew lwjgl3:run                      # run on desktop
-./gradlew lwjgl3:jar                      # single runnable jar in lwjgl3/build/libs/
-./gradlew lwjgl3:packageWinX64            # Windows zip with a bundled Java runtime, in dist/
-./gradlew android:assembleDebug           # needs sdk.dir in local.properties or ANDROID_HOME
-./gradlew core:test
-```
-
-Two windows on one computer:
-
-```bash
-java -jar lwjgl3/build/libs/Nightball-0.1.0.jar --host --start --name Ali
-java -jar lwjgl3/build/libs/Nightball-0.1.0.jar --join 127.0.0.1 --name Veli
-```
-
-The Windows package is built with [Construo](https://github.com/fourlastor-alexandria/construo).
-jlink runs from the build machine's JDK, so the Windows JDK version in `lwjgl3/build.gradle` must
-match the major version of the JDK used for the build (21).
