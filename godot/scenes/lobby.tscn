@@ -1,0 +1,217 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/lobby.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/background.tscn" id="2_bg"]
+
+[node name="Lobby" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" parent="." instance=ExtResource("2_bg")]
+layout_mode = 1
+
+[node name="Content" type="MarginContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 48
+theme_override_constants/margin_top = 36
+theme_override_constants/margin_right = 48
+theme_override_constants/margin_bottom = 32
+
+[node name="Column" type="VBoxContainer" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 22
+
+[node name="Header" type="HBoxContainer" parent="Content/Column"]
+layout_mode = 2
+
+[node name="Titles" type="VBoxContainer" parent="Content/Column/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="RoomName" type="Label" parent="Content/Column/Header/Titles"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+text = "Room"
+
+[node name="JoinHint" type="Label" parent="Content/Column/Header/Titles"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+
+[node name="LeaveButton" type="Button" parent="Content/Column/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+text = "Leave"
+
+[node name="Teams" type="HBoxContainer" parent="Content/Column"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="RedCard" type="PanelContainer" parent="Content/Column/Teams"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Box" type="VBoxContainer" parent="Content/Column/Teams/RedCard"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="RedAccent" type="Panel" parent="Content/Column/Teams/RedCard/Box"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="Head" type="HBoxContainer" parent="Content/Column/Teams/RedCard/Box"]
+layout_mode = 2
+
+[node name="RedTitle" type="Label" parent="Content/Column/Teams/RedCard/Box/Head"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HeadingLabel"
+theme_override_font_sizes/font_size = 26
+text = "Red"
+
+[node name="RedCount" type="Label" parent="Content/Column/Teams/RedCard/Box/Head"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = "0/4"
+
+[node name="RedPlayers" type="VBoxContainer" parent="Content/Column/Teams/RedCard/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="RedJoin" type="Button" parent="Content/Column/Teams/RedCard/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Join red"
+
+[node name="SpecCard" type="PanelContainer" parent="Content/Column/Teams"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Box" type="VBoxContainer" parent="Content/Column/Teams/SpecCard"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SpecAccent" type="Panel" parent="Content/Column/Teams/SpecCard/Box"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="Head" type="HBoxContainer" parent="Content/Column/Teams/SpecCard/Box"]
+layout_mode = 2
+
+[node name="SpecTitle" type="Label" parent="Content/Column/Teams/SpecCard/Box/Head"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HeadingLabel"
+theme_override_font_sizes/font_size = 26
+text = "Spectators"
+
+[node name="SpecCount" type="Label" parent="Content/Column/Teams/SpecCard/Box/Head"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = "0/4"
+
+[node name="SpecPlayers" type="VBoxContainer" parent="Content/Column/Teams/SpecCard/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="SpecJoin" type="Button" parent="Content/Column/Teams/SpecCard/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Watch"
+
+[node name="BlueCard" type="PanelContainer" parent="Content/Column/Teams"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Box" type="VBoxContainer" parent="Content/Column/Teams/BlueCard"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BlueAccent" type="Panel" parent="Content/Column/Teams/BlueCard/Box"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="Head" type="HBoxContainer" parent="Content/Column/Teams/BlueCard/Box"]
+layout_mode = 2
+
+[node name="BlueTitle" type="Label" parent="Content/Column/Teams/BlueCard/Box/Head"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HeadingLabel"
+theme_override_font_sizes/font_size = 26
+text = "Blue"
+
+[node name="BlueCount" type="Label" parent="Content/Column/Teams/BlueCard/Box/Head"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = "0/4"
+
+[node name="BluePlayers" type="VBoxContainer" parent="Content/Column/Teams/BlueCard/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="BlueJoin" type="Button" parent="Content/Column/Teams/BlueCard/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Join blue"
+
+[node name="Footer" type="CenterContainer" parent="Content/Column"]
+layout_mode = 2
+
+[node name="StartButton" type="Button" parent="Content/Column/Footer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+theme_override_font_sizes/font_size = 26
+text = "Start game"
+
+[node name="Waiting" type="Label" parent="Content/Column/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = "Waiting for the host to start"
+
+[node name="Connecting" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"HeadingLabel"
+text = "Connecting"
+horizontal_alignment = 1
+vertical_alignment = 1

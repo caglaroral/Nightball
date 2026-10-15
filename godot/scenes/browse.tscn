@@ -1,0 +1,112 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/browse.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/background.tscn" id="2_bg"]
+
+[node name="Browse" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" parent="." instance=ExtResource("2_bg")]
+layout_mode = 1
+
+[node name="Content" type="MarginContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 48
+theme_override_constants/margin_top = 36
+theme_override_constants/margin_right = 48
+theme_override_constants/margin_bottom = 36
+
+[node name="Column" type="VBoxContainer" parent="Content"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Header" type="HBoxContainer" parent="Content/Column"]
+layout_mode = 2
+
+[node name="Titles" type="VBoxContainer" parent="Content/Column/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="Heading" type="Label" parent="Content/Column/Header/Titles"]
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+text = "Rooms on this network"
+
+[node name="Status" type="Label" parent="Content/Column/Header/Titles"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = "Searching"
+
+[node name="BackButton" type="Button" parent="Content/Column/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+text = "Back"
+
+[node name="RoomsCard" type="PanelContainer" parent="Content/Column"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Scroll" type="ScrollContainer" parent="Content/Column/RoomsCard"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Rooms" type="VBoxContainer" parent="Content/Column/RoomsCard/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="Empty" type="Label" parent="Content/Column/RoomsCard"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"MutedLabel"
+text = "No rooms yet. Ask a friend to host one on the same Wi-Fi."
+horizontal_alignment = 1
+
+[node name="AddressCard" type="PanelContainer" parent="Content/Column"]
+layout_mode = 2
+
+[node name="Row" type="HBoxContainer" parent="Content/Column/AddressCard"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="AddressLabel" type="Label" parent="Content/Column/AddressCard/Row"]
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = "Join by address"
+
+[node name="AddressEdit" type="LineEdit" parent="Content/Column/AddressCard/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "192.168.1.20"
+virtual_keyboard_type = 3
+
+[node name="ConnectButton" type="Button" parent="Content/Column/AddressCard/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+disabled = true
+text = "Connect"
+
+[node name="Message" type="Label" parent="Content/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.45, 0.4, 1)
+text_overrun_behavior = 3

@@ -1,0 +1,258 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/game.gd" id="1_game"]
+[ext_resource type="PackedScene" path="res://scenes/background.tscn" id="2_bg"]
+[ext_resource type="Script" path="res://scripts/ui/field.gd" id="3_field"]
+[ext_resource type="Script" path="res://scripts/ui/name_tags.gd" id="4_names"]
+[ext_resource type="Script" path="res://scripts/ui/touch_controls.gd" id="5_touch"]
+
+[sub_resource type="Gradient" id="fade_out"]
+offsets = PackedFloat32Array(0, 0.75, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="Gradient" id="puff"]
+colors = PackedColorArray(1, 1, 1, 0.7, 1, 1, 1, 0)
+
+[node name="Game" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_game")
+
+[node name="Background" parent="." instance=ExtResource("2_bg")]
+layout_mode = 1
+
+[node name="Field" type="Node2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3_field")
+
+[node name="ConfettiLeft" type="CPUParticles2D" parent="Field"]
+unique_name_in_owner = true
+position = Vector2(-372, 0)
+emitting = false
+amount = 160
+lifetime = 2.4
+one_shot = true
+explosiveness = 0.95
+emission_shape = 3
+emission_rect_extents = Vector2(4, 56)
+direction = Vector2(1, 0)
+spread = 55.0
+gravity = Vector2(0, 380)
+initial_velocity_min = 240.0
+initial_velocity_max = 560.0
+angular_velocity_min = -540.0
+angular_velocity_max = 540.0
+damping_min = 40.0
+damping_max = 90.0
+angle_min = -180.0
+angle_max = 180.0
+scale_amount_min = 3.0
+scale_amount_max = 6.5
+color_ramp = SubResource("fade_out")
+
+[node name="ConfettiRight" type="CPUParticles2D" parent="Field"]
+unique_name_in_owner = true
+position = Vector2(372, 0)
+emitting = false
+amount = 160
+lifetime = 2.4
+one_shot = true
+explosiveness = 0.95
+emission_shape = 3
+emission_rect_extents = Vector2(4, 56)
+direction = Vector2(-1, 0)
+spread = 55.0
+gravity = Vector2(0, 380)
+initial_velocity_min = 240.0
+initial_velocity_max = 560.0
+angular_velocity_min = -540.0
+angular_velocity_max = 540.0
+damping_min = 40.0
+damping_max = 90.0
+angle_min = -180.0
+angle_max = 180.0
+scale_amount_min = 3.0
+scale_amount_max = 6.5
+color_ramp = SubResource("fade_out")
+
+[node name="KickPuff" type="CPUParticles2D" parent="Field"]
+unique_name_in_owner = true
+emitting = false
+amount = 14
+lifetime = 0.4
+one_shot = true
+explosiveness = 1.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 40.0
+initial_velocity_max = 130.0
+damping_min = 150.0
+damping_max = 250.0
+scale_amount_min = 2.0
+scale_amount_max = 4.0
+color_ramp = SubResource("puff")
+
+[node name="NameTags" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("4_names")
+
+[node name="Flash" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0)
+
+[node name="ScorePill" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -130.0
+offset_top = 12.0
+offset_right = 130.0
+offset_bottom = 66.0
+grow_horizontal = 2
+theme_type_variation = &"PillPanel"
+
+[node name="Row" type="HBoxContainer" parent="ScorePill"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 18
+
+[node name="RedDot" type="Panel" parent="ScorePill/Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="RedScore" type="Label" parent="ScorePill/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"ScoreLabel"
+text = "0"
+
+[node name="Dash" type="Label" parent="ScorePill/Row"]
+layout_mode = 2
+theme_type_variation = &"ScoreLabel"
+theme_override_colors/font_color = Color(1, 1, 1, 0.45)
+text = ":"
+
+[node name="BlueScore" type="Label" parent="ScorePill/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"ScoreLabel"
+text = "0"
+
+[node name="BlueDot" type="Panel" parent="ScorePill/Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="ClockPill" type="PanelContainer" parent="."]
+layout_mode = 1
+offset_left = 20.0
+offset_top = 16.0
+offset_right = 140.0
+offset_bottom = 62.0
+theme_type_variation = &"PillPanel"
+
+[node name="Clock" type="Label" parent="ClockPill"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+theme_override_font_sizes/font_size = 24
+text = "0:00"
+horizontal_alignment = 1
+
+[node name="ExitButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -180.0
+offset_top = 16.0
+offset_right = -20.0
+offset_bottom = 60.0
+grow_horizontal = 0
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "Leave"
+
+[node name="Banner" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -450.0
+offset_top = -130.0
+offset_right = 450.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="BannerTitle" type="Label" parent="Banner"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"BannerLabel"
+text = "GOAL!"
+horizontal_alignment = 1
+
+[node name="BannerSub" type="Label" parent="Banner"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.6)
+theme_override_constants/outline_size = 8
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -46.0
+offset_right = 300.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_type_variation = &"MutedLabel"
+text = "Move: arrows / WASD      Kick: X or Space"
+horizontal_alignment = 1
+
+[node name="TouchControls" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("5_touch")

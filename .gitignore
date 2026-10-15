@@ -5,3 +5,4 @@ local.properties
 .idea/
 android/libs/
 dist/
+godot/.godot/
