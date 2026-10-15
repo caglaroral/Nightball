@@ -10,7 +10,7 @@ const GAME_PORT := 47778
 const MAX_NAME_BYTES := 24
 
 const MAGIC := 0x4E42
-const VERSION := 2
+const VERSION := 3
 
 # Discovery
 const DISCOVER := 1

@@ -6,6 +6,7 @@ const SOUNDS := {
 	"bounce": "res://assets/sfx/bounce.wav",
 	"whistle": "res://assets/sfx/whistle.wav",
 	"goal": "res://assets/sfx/goal.wav",
+	"commentator": "res://assets/sfx/commentator.wav",
 	"win": "res://assets/sfx/win.wav",
 	"click": "res://assets/sfx/click.wav",
 }

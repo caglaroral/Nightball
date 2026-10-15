@@ -186,7 +186,41 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Join blue"
 
-[node name="Footer" type="CenterContainer" parent="Content/Column"]
+[node name="Footer" type="HBoxContainer" parent="Content/Column"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 10
+
+[node name="FieldLabel" type="Label" parent="Content/Column/Footer"]
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = "Field"
+
+[node name="FieldAuto" type="Button" parent="Content/Column/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Auto"
+
+[node name="FieldSmall" type="Button" parent="Content/Column/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Small"
+
+[node name="FieldBig" type="Button" parent="Content/Column/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Big"
+
+[node name="FieldInfo" type="Label" parent="Content/Column/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+
+[node name="Gap" type="Control" parent="Content/Column/Footer"]
+custom_minimum_size = Vector2(36, 0)
 layout_mode = 2
 
 [node name="StartButton" type="Button" parent="Content/Column/Footer"]

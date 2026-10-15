@@ -65,6 +65,10 @@ func _apply_launch_arguments() -> bool:
 	return false
 
 
+func _process(delta: float) -> void:
+	Fx.follow_keyboard(%Content, delta)
+
+
 func _remember_name() -> String:
 	var player_name: String = %NameEdit.text.strip_edges()
 	if player_name.is_empty():

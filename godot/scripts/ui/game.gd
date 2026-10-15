@@ -11,6 +11,9 @@ var _names := {}
 var _names_key := ""
 var _shake := 0.0
 var _touch_mode := false
+var _camera := FieldCamera.new()
+
+const TOP_BAR := 52.0
 
 
 func _ready() -> void:
@@ -57,10 +60,10 @@ func _process(delta: float) -> void:
 		get_tree().change_scene_to_file("res://scenes/lobby.tscn")
 		return
 
-	_fit_field()
 	var s := _session.render_state()
 	if s == null:
 		return
+	_place_field(s, delta)
 	_update_names()
 	field.local_player_id = _session.local_player_id()
 	field.show_snapshot(s, delta)
@@ -80,14 +83,18 @@ func _send_input() -> void:
 	_session.set_local_input(move.x, move.y, kick)
 
 
-## Scales the field to fill the screen below the score bar.
-func _fit_field() -> void:
-	var view := size
-	var extent: Vector2 = field.extent()
-	var top := 70.0
-	var scale := minf(view.x / extent.x, (view.y - top) / extent.y)
+## Fits the field below the score bar; on the big field the camera follows the local player.
+func _place_field(s: Snapshot, delta: float) -> void:
+	field.set_stadium(_session.stadium_id)
+	var top := TOP_BAR
+	var screen := Vector2(size.x, size.y - top)
+	var me := s.index_of(_session.local_player_id())
+	var follow: bool = field.stadium.id == Stadium.BIG and me >= 0
+	var player := Vector2(s.player_x[me], s.player_y[me]) if me >= 0 else Vector2.ZERO
+	var scale := _camera.update(delta, follow, player, Vector2(s.ball_x, s.ball_y), screen,
+			field.fit_area(), field.extent())
 	field.scale = Vector2(scale, scale)
-	field.position = Vector2(view.x / 2.0, top + (view.y - top) / 2.0)
+	field.position = Vector2(size.x / 2.0, top + screen.y / 2.0) - _camera.centre * scale
 
 
 func _update_names() -> void:
@@ -130,10 +137,15 @@ func _react(s: Snapshot) -> void:
 
 func _celebrate(scorer: int) -> void:
 	Sfx.play("goal")
+	# The announcer comes in just after the crowd.
+	get_tree().create_timer(0.25).timeout.connect(func(): Sfx.play("commentator", 1.0))
 	_shake = 1.0
 	var color := Team.color(scorer)
 	# Confetti bursts out of the goal that was scored in.
 	var confetti: CPUParticles2D = %ConfettiRight if scorer == Team.RED else %ConfettiLeft
+	var goal_x: float = field.stadium.pitch_width + 2.0
+	%ConfettiLeft.position.x = -goal_x
+	%ConfettiRight.position.x = goal_x
 	var ramp := Gradient.new()
 	ramp.set_color(0, color.lightened(0.35))
 	ramp.set_color(1, color.darkened(0.1))

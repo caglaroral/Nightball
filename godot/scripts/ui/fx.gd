@@ -28,6 +28,25 @@ static func _scale_to(control: Control, value: float, duration: float) -> void:
 			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
+## Phones do not move the app when the on-screen keyboard opens, so a text field can end up
+## underneath it. Call every frame: slides content (anchored to the full screen) up until the
+## focused text field sits just above the keyboard, and back down when it closes.
+static func follow_keyboard(content: Control, delta: float) -> void:
+	var keyboard_px := DisplayServer.virtual_keyboard_get_height()
+	# Nothing to undo; also leaves the screen's slide-in animation alone.
+	if keyboard_px <= 0 and content.position.y >= -0.5:
+		return
+	var focus := content.get_viewport().gui_get_focus_owner()
+	var target := 0.0
+	if keyboard_px > 0 and focus is LineEdit and content.is_ancestor_of(focus):
+		var view_height := content.get_viewport_rect().size.y
+		var units_per_px := view_height / float(DisplayServer.window_get_size().y)
+		var keyboard_top := view_height - keyboard_px * units_per_px
+		var field_bottom := focus.get_global_rect().end.y - content.position.y
+		target = minf(0.0, keyboard_top - 20.0 - field_bottom)
+	content.position.y = lerpf(content.position.y, target, 1.0 - exp(-14.0 * delta))
+
+
 ## Fades and slides a screen's content in.
 static func enter(control: Control) -> void:
 	control.modulate.a = 0.0

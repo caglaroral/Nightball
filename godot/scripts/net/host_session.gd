@@ -78,6 +78,12 @@ func update(delta: float, now_ms: int) -> void:
 		if _match.is_finished():
 			stop_game()
 
+	if _match == null:
+		var next := resolve_stadium(field_mode, count_team(Team.RED), count_team(Team.BLUE))
+		if next != stadium_id:
+			stadium_id = next
+			_lobby_dirty = true
+
 	if _lobby_dirty or now_ms >= _next_lobby_ms:
 		_lobby_dirty = false
 		_next_lobby_ms = now_ms + LOBBY_INTERVAL_MS
@@ -220,6 +226,8 @@ func _set_team(id: int, team: int) -> void:
 func _broadcast_lobby() -> void:
 	var packet := Protocol.begin(Protocol.LOBBY)
 	packet.put_u8(1 if _match != null else 0)
+	packet.put_u8(field_mode)
+	packet.put_u8(stadium_id)
 	Protocol.put_string(packet, room_name)
 	packet.put_u8(players.size())
 	for p in players:
@@ -275,7 +283,8 @@ func request_team(team: int) -> void:
 func start_game() -> void:
 	if _match != null or count_team(Team.RED) + count_team(Team.BLUE) == 0:
 		return
-	_match = MatchSim.new(Stadium.classic(), SCORE_LIMIT, TIME_LIMIT_SECONDS)
+	stadium_id = resolve_stadium(field_mode, count_team(Team.RED), count_team(Team.BLUE))
+	_match = MatchSim.new(Stadium.by_id(stadium_id), SCORE_LIMIT, TIME_LIMIT_SECONDS)
 	for p in players:
 		_match.add_player(p.id, p.team)
 	_match.reset_positions()
@@ -288,6 +297,21 @@ func start_game() -> void:
 func stop_game() -> void:
 	_match = null
 	_lobby_dirty = true
+
+
+func set_field_mode(mode: int) -> void:
+	if _match == null and mode != field_mode:
+		field_mode = clampi(mode, FIELD_AUTO, FIELD_BIG)
+		_lobby_dirty = true
+
+
+## Auto picks the big field once a team has three or more players.
+static func resolve_stadium(mode: int, red: int, blue: int) -> int:
+	if mode == FIELD_SMALL:
+		return Stadium.SMALL
+	if mode == FIELD_BIG:
+		return Stadium.BIG
+	return Stadium.BIG if maxi(red, blue) >= 3 else Stadium.SMALL
 
 
 func render_state() -> Snapshot:

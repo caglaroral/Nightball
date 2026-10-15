@@ -69,6 +69,24 @@ func _run() -> void:
 	await _frames(40)
 	await _shot("7_goal_later")
 
+	host.stop_game()
+	await _frames(20)
+	host.set_field_mode(Session.FIELD_BIG)
+	await _frames(30)
+	await _shot("8_lobby_big")
+	host.start_game()
+	await _frames(40)
+	await _shot("9_big_field")
+
+	# A 20:9 phone screen, small field.
+	host.stop_game()
+	host.set_field_mode(Session.FIELD_SMALL)
+	root.size = Vector2i(1600, 720)
+	await _frames(20)
+	host.start_game()
+	await _frames(40)
+	await _shot("10_phone_small")
+
 	process_frame.disconnect(pump)
 	guest.close()
 	guest2.close()

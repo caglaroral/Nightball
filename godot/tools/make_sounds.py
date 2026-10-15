@@ -26,8 +26,9 @@ def band(signal, low, high, soft=0.15):
     """Band-pass in the frequency domain with soft edges."""
     spectrum = np.fft.rfft(signal)
     f = np.fft.rfftfreq(len(signal), 1 / RATE)
-    lo = 1 / (1 + np.exp(-(f - low) / (low * soft + 1)))
-    hi = 1 / (1 + np.exp((f - high) / (high * soft + 1)))
+    with np.errstate(over="ignore"):
+        lo = 1 / (1 + np.exp(-(f - low) / (low * soft + 1)))
+        hi = 1 / (1 + np.exp((f - high) / (high * soft + 1)))
     return np.fft.irfft(spectrum * lo * hi, len(signal))
 
 

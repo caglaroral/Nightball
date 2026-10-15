@@ -1,8 +1,12 @@
 class_name Stadium
 extends RefCounted
 ## Field layout, centred on the kickoff spot. Red defends the left goal (negative x).
-## Modelled on Haxball's Classic stadium.
 
+## Ids sent over the network.
+const SMALL := 0
+const BIG := 1
+
+var id := SMALL
 ## Half size of the area players can move in.
 var width := 420.0
 var height := 200.0
@@ -21,8 +25,34 @@ var vertices: Array[WallVertex] = []
 var posts: Array[Disc] = []
 
 
+static func by_id(stadium_id: int) -> Stadium:
+	return big() if stadium_id == BIG else classic()
+
+
+static func display_name(stadium_id: int) -> String:
+	return "Big" if stadium_id == BIG else "Small"
+
+
+## Haxball's Classic stadium, for 1v1 and 2v2.
 static func classic() -> Stadium:
+	return _build(Stadium.new())
+
+
+## A larger field for 3v3 and 4v4, close to Haxball's Big stadium.
+static func big() -> Stadium:
 	var s := Stadium.new()
+	s.id = BIG
+	s.width = 600.0
+	s.height = 270.0
+	s.pitch_width = 550.0
+	s.pitch_height = 240.0
+	s.goal_half_width = 80.0
+	s.kickoff_radius = 80.0
+	s.spawn_distance = 280.0
+	return _build(s)
+
+
+static func _build(s: Stadium) -> Stadium:
 	var w := s.pitch_width
 	var h := s.pitch_height
 	var g := s.goal_half_width

@@ -105,9 +105,11 @@ func _read_packets(now_ms: int) -> void:
 
 
 func _read_lobby() -> void:
-	if _in.get_available_bytes() < 2:
+	if _in.get_available_bytes() < 4:
 		return
 	var now_in_game := _in.get_u8() != 0
+	field_mode = _in.get_u8()
+	stadium_id = Stadium.BIG if _in.get_u8() == Stadium.BIG else Stadium.SMALL
 	room_name = Protocol.get_string(_in)
 	var count := _in.get_u8()
 	var list: Array[LobbyPlayer] = []

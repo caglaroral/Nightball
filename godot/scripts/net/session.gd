@@ -5,7 +5,15 @@ extends RefCounted
 const MAX_PLAYERS := 16
 const MAX_PER_TEAM := 4
 
+## Field choice in the lobby.
+const FIELD_AUTO := 0
+const FIELD_SMALL := 1
+const FIELD_BIG := 2
+
 var room_name := ""
+var field_mode := FIELD_AUTO
+## The field being played, or the one the next match will use.
+var stadium_id := Stadium.SMALL
 var players: Array[LobbyPlayer] = []
 ## Non-empty once the session has ended; explains why.
 var closed_reason := ""
@@ -49,6 +57,11 @@ func start_game() -> void:
 
 ## Host only: ends the match and returns everyone to the lobby.
 func stop_game() -> void:
+	pass
+
+
+## Host only.
+func set_field_mode(_mode: int) -> void:
 	pass
 
 

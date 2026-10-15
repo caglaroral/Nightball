@@ -46,9 +46,25 @@ func _ready() -> void:
 	_discs.draw.connect(_draw_discs)
 
 
-## Size of everything that is drawn, for fitting the field to the screen.
+## Everywhere a player can go, plus a thin margin. The camera never shows past this.
 func extent() -> Vector2:
-	return Vector2(stadium.width + 30.0, stadium.height + 30.0) * 2.0
+	return Vector2(stadium.width + 4.0, stadium.height + 4.0) * 2.0
+
+
+## What a whole-field view fits on screen: full width, but vertically only the pitch lines plus a
+## small margin. Players pressed against the top or bottom bounds may be partly cropped; the ball
+## never goes there.
+func fit_area() -> Vector2:
+	return Vector2(stadium.width + 4.0, stadium.pitch_height + 14.0) * 2.0
+
+
+func set_stadium(stadium_id: int) -> void:
+	if stadium.id == stadium_id:
+		return
+	stadium = Stadium.by_id(stadium_id)
+	_trail.clear()
+	_pitch.queue_redraw()
+	_lights.queue_redraw()
 
 
 func show_snapshot(s: Snapshot, delta: float) -> void:
@@ -75,14 +91,15 @@ func _draw_pitch() -> void:
 	var h := stadium.pitch_height
 	var g := stadium.goal_half_width
 	var depth := w + stadium.goal_depth
-	var outer := Rect2(-stadium.width - 30, -stadium.height - 30, (stadium.width + 30) * 2, (stadium.height + 30) * 2)
+	# Turf reaches far past the playable area so wide screens show grass, not empty bars.
+	var outer := Rect2(-stadium.width - 700, -stadium.height - 500, (stadium.width + 700) * 2, (stadium.height + 500) * 2)
 	c.draw_rect(outer, TURF_OUTER)
-	# Mowing stripes running past the lines into the run-off area.
-	var stripes := 12
-	var stripe_w := outer.size.x / stripes
-	for i in stripes:
-		c.draw_rect(Rect2(outer.position.x + i * stripe_w, outer.position.y, stripe_w + 0.5, outer.size.y),
-				TURF_A if i % 2 == 0 else TURF_B)
+	# Mowing stripes, aligned so the halfway line sits between two stripes.
+	var stripe_w := w * 2.0 / 10.0
+	var first := -ceili((outer.size.x / 2.0) / stripe_w)
+	for i in range(first, -first):
+		c.draw_rect(Rect2(i * stripe_w, outer.position.y, stripe_w + 0.5, outer.size.y),
+				TURF_A if posmod(i, 2) == 0 else TURF_B)
 	# Darker run-off outside the pitch lines.
 	_run_off(c, outer, w, h, Color(0, 0, 0, 0.16))
 
@@ -136,8 +153,9 @@ func _draw_lights() -> void:
 	var h := stadium.pitch_height
 	var pools := [Vector2(-w * 0.55, -h * 0.35), Vector2(w * 0.55, -h * 0.35),
 			Vector2(-w * 0.55, h * 0.45), Vector2(w * 0.55, h * 0.45), Vector2.ZERO]
+	var grow := w / 370.0
 	for p in pools:
-		var size := Vector2(520, 380) if p != Vector2.ZERO else Vector2(700, 460)
+		var size := (Vector2(520, 380) if p != Vector2.ZERO else Vector2(700, 460)) * grow
 		_lights.draw_texture_rect(_pool, Rect2(p - size / 2, size), false, Color(1, 1, 0.92, 0.055))
 
 

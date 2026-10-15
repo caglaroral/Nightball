@@ -10,6 +10,13 @@
 offsets = PackedFloat32Array(0, 0.75, 1)
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
 
+[sub_resource type="StyleBoxFlat" id="top_bar"]
+bg_color = Color(0.055, 0.07, 0.085, 0.96)
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.06)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 14
+
 [sub_resource type="Gradient" id="puff"]
 colors = PackedColorArray(1, 1, 1, 0.7, 1, 1, 1, 0)
 
@@ -118,15 +125,24 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(1, 1, 1, 0)
 
+[node name="TopBar" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 52.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("top_bar")
+
 [node name="ScorePill" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -130.0
-offset_top = 12.0
-offset_right = 130.0
-offset_bottom = 66.0
+offset_left = -120.0
+offset_top = 5.0
+offset_right = 120.0
+offset_bottom = 47.0
 grow_horizontal = 2
 theme_type_variation = &"PillPanel"
 
@@ -145,11 +161,13 @@ size_flags_vertical = 4
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"ScoreLabel"
+theme_override_font_sizes/font_size = 30
 text = "0"
 
 [node name="Dash" type="Label" parent="ScorePill/Row"]
 layout_mode = 2
 theme_type_variation = &"ScoreLabel"
+theme_override_font_sizes/font_size = 30
 theme_override_colors/font_color = Color(1, 1, 1, 0.45)
 text = ":"
 
@@ -157,6 +175,7 @@ text = ":"
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"ScoreLabel"
+theme_override_font_sizes/font_size = 30
 text = "0"
 
 [node name="BlueDot" type="Panel" parent="ScorePill/Row"]
@@ -167,17 +186,17 @@ size_flags_vertical = 4
 
 [node name="ClockPill" type="PanelContainer" parent="."]
 layout_mode = 1
-offset_left = 20.0
-offset_top = 16.0
-offset_right = 140.0
-offset_bottom = 62.0
+offset_left = 16.0
+offset_top = 8.0
+offset_right = 126.0
+offset_bottom = 44.0
 theme_type_variation = &"PillPanel"
 
 [node name="Clock" type="Label" parent="ClockPill"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"HeadingLabel"
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 20
 text = "0:00"
 horizontal_alignment = 1
 
@@ -187,10 +206,10 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -180.0
-offset_top = 16.0
-offset_right = -20.0
-offset_bottom = 60.0
+offset_left = -170.0
+offset_top = 8.0
+offset_right = -16.0
+offset_bottom = 44.0
 grow_horizontal = 0
 focus_mode = 0
 theme_type_variation = &"GhostButton"

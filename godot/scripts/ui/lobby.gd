@@ -27,6 +27,12 @@ func _ready() -> void:
 		(pair[0] as Panel).add_theme_stylebox_override("panel", bar)
 	%RedTitle.add_theme_color_override("font_color", Team.color(Team.RED))
 	%BlueTitle.add_theme_color_override("font_color", Team.color(Team.BLUE))
+	%FieldAuto.pressed.connect(func(): _session.set_field_mode(Session.FIELD_AUTO))
+	%FieldSmall.pressed.connect(func(): _session.set_field_mode(Session.FIELD_SMALL))
+	%FieldBig.pressed.connect(func(): _session.set_field_mode(Session.FIELD_BIG))
+	for button in [%FieldAuto, %FieldSmall, %FieldBig]:
+		button.visible = _session.is_host()
+	%FieldInfo.visible = not _session.is_host()
 	%StartButton.visible = _session.is_host()
 	%Waiting.visible = not _session.is_host()
 	%JoinHint.text = _join_hint()
@@ -68,10 +74,25 @@ func _process(_delta: float) -> void:
 	%RoomName.text = _session.room_name
 	var playing := _session.count_team(Team.RED) + _session.count_team(Team.BLUE)
 	%StartButton.disabled = playing == 0
+	_refresh_field()
 	if auto_start and _session.is_host() and _session.players.size() >= 2:
 		auto_start = false
 		_session.start_game()
 	_refresh_teams()
+
+
+## Highlights the host's choice; guests see which field the match will use.
+func _refresh_field() -> void:
+	var modes := {Session.FIELD_AUTO: %FieldAuto, Session.FIELD_SMALL: %FieldSmall, Session.FIELD_BIG: %FieldBig}
+	for mode in modes:
+		var variation := &"PrimaryButton" if _session.field_mode == mode else &""
+		var button: Button = modes[mode]
+		if button.theme_type_variation != variation:
+			button.theme_type_variation = variation
+	var size_name := Stadium.display_name(_session.stadium_id)
+	%FieldAuto.text = "Auto (%s)" % size_name if _session.field_mode == Session.FIELD_AUTO else "Auto"
+	var suffix := " (auto)" if _session.field_mode == Session.FIELD_AUTO else ""
+	%FieldInfo.text = "Field: %s%s" % [size_name, suffix]
 
 
 ## Rebuilds the player lists only when membership changes.

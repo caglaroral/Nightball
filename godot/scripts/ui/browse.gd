@@ -19,6 +19,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	Fx.follow_keyboard(%Content, delta)
 	_discovery.update(Time.get_ticks_msec())
 	_dots = fmod(_dots + delta * 2.0, 4.0)
 	var rooms := _discovery.rooms()

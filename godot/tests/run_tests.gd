@@ -15,6 +15,10 @@ func _initialize() -> void:
 		"test_ball_bounces_off_side_line",
 		"test_elastic_disc_collision_swaps_velocity",
 		"test_snapshot_round_trip",
+		"test_auto_field_picks_big_for_three_a_side",
+		"test_big_field_goal",
+		"test_camera_stays_inside_field",
+		"test_field_choice_reaches_clients",
 		"test_host_and_clients_play_a_match",
 		"test_client_gives_up_without_room",
 		"test_discovery_finds_local_room",
@@ -165,6 +169,47 @@ func test_snapshot_round_trip() -> void:
 	check(copy.time_limit_seconds == 120, "time limit")
 
 
+func test_auto_field_picks_big_for_three_a_side() -> void:
+	check(HostSession.resolve_stadium(Session.FIELD_AUTO, 1, 1) == Stadium.SMALL, "1v1 small")
+	check(HostSession.resolve_stadium(Session.FIELD_AUTO, 2, 2) == Stadium.SMALL, "2v2 small")
+	check(HostSession.resolve_stadium(Session.FIELD_AUTO, 3, 2) == Stadium.BIG, "3v2 big")
+	check(HostSession.resolve_stadium(Session.FIELD_AUTO, 4, 4) == Stadium.BIG, "4v4 big")
+	check(HostSession.resolve_stadium(Session.FIELD_BIG, 1, 1) == Stadium.BIG, "forced big")
+	check(HostSession.resolve_stadium(Session.FIELD_SMALL, 4, 4) == Stadium.SMALL, "forced small")
+
+
+func test_big_field_goal() -> void:
+	var m := MatchSim.new(Stadium.big(), 3, 0)
+	m.add_player(1, Team.RED)
+	m.reset_positions()
+	check(m.player(1).disc.x == -280.0, "spawns on big field spawn line")
+	var ball := m.ball()
+	# Inside the big goal (half width 80) but outside the small one (64).
+	ball.set_position(500, 70)
+	ball.vx = 7.0
+	for i in 40:
+		if m.state == Snapshot.State.GOAL:
+			break
+		m.tick()
+	check(m.state == Snapshot.State.GOAL and m.red_score == 1, "goal at y=70 on the big field")
+
+
+func test_camera_stays_inside_field() -> void:
+	var extent := Stadium.big().width * 2.0 + 8.0
+	var visible := Vector2(848, 408)
+	var big_extent := Vector2(extent, Stadium.big().height * 2.0 + 8.0)
+	var c := FieldCamera.clamp_centre(Vector2(9999, -9999), visible, big_extent)
+	near(c.x, (big_extent.x - visible.x) / 2.0, 1e-3, "clamped right")
+	near(c.y, -(big_extent.y - visible.y) / 2.0, 1e-3, "clamped top")
+	var small := Vector2(848, 408)
+	c = FieldCamera.clamp_centre(Vector2(100, 50), Vector2(900, 450), small)
+	check(c == Vector2.ZERO, "field smaller than view is centred")
+	var cam := FieldCamera.new()
+	var scale := cam.update(0.016, true, Vector2(-590, 0), Vector2(-590, 0), Vector2(1280, 650), big_extent, big_extent)
+	near(scale, minf(1280.0 / 848.0, 650.0 / 368.0), 1e-4, "follow scale shows the small-field area")
+	check(cam.centre.x - 1280.0 / scale / 2.0 >= -big_extent.x / 2.0 - 0.01, "left edge stays on the field")
+
+
 # --- networking over real UDP sockets on this machine ------------------------
 
 func _pump(condition: Callable, sessions: Array) -> bool:
@@ -221,6 +266,22 @@ func test_host_and_clients_play_a_match() -> void:
 	check(_pump(func(): return not alice.closed_reason.is_empty(), [alice]), "host close reaches client")
 	check(alice.closed_reason == "The host closed the room", "close reason")
 	alice.close()
+
+
+func test_field_choice_reaches_clients() -> void:
+	var host := HostSession.new("Host", "Fields")
+	var guest := ClientSession.new("127.0.0.1", host.port(), "Guest", Time.get_ticks_msec())
+	check(_pump(func(): return guest.is_connected_to_room() and guest.players.size() == 2, [host, guest]), "joined")
+	check(guest.stadium_id == Stadium.SMALL and guest.field_mode == Session.FIELD_AUTO, "auto small")
+	host.set_field_mode(Session.FIELD_BIG)
+	check(_pump(func(): return guest.stadium_id == Stadium.BIG and guest.field_mode == Session.FIELD_BIG,
+			[host, guest]), "big choice reaches guest")
+	host.start_game()
+	check(_pump(func(): return guest.in_game() and guest.render_state() != null, [host, guest]), "starts")
+	var s := guest.render_state()
+	check(absf(s.player_x[0]) == 280.0, "players placed on the big field")
+	guest.close()
+	host.close()
 
 
 func test_client_gives_up_without_room() -> void:
