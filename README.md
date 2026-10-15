@@ -30,7 +30,9 @@ Fields: the small field (Haxball's Classic) is shown whole. The big field, for 3
 larger than the screen, and the camera follows your player, leaning towards the ball. In the
 lobby the host picks Auto (big once a team has three players), Small or Big.
 
-Controls: arrow keys or WASD to move, X or Space to kick. On phones, the left half of the screen
+Controls: arrow keys or WASD to move, X or Space to kick, Escape to leave a match. With a
+gamepad: left stick or d-pad to move, A, X or the right shoulder button to kick, Back to leave a
+match; in menus the d-pad moves between buttons, A selects and B goes back. On phones, the left half of the screen
 is a joystick (it appears where your thumb lands); hold anywhere on the right half to kick.
 
 | Path | Contents |

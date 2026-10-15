@@ -4,6 +4,7 @@ extends Control
 var _discovery: LanDiscovery
 var _shown_keys := ""
 var _dots := 0.0
+var _focused_first_room := false
 
 
 func _ready() -> void:
@@ -16,6 +17,8 @@ func _ready() -> void:
 	%AddressEdit.text_submitted.connect(func(_t): _join_typed())
 	Fx.juice_buttons(self)
 	Fx.enter(%Content)
+	if not DisplayServer.is_touchscreen_available():
+		%BackButton.grab_focus.call_deferred()
 
 
 func _process(delta: float) -> void:
@@ -50,6 +53,16 @@ func _rebuild_rows(rooms: Array) -> void:
 		row.pressed.connect(func(): _join(ip, port))
 		%Rooms.add_child(row)
 		Fx.juice(row)
+	# Gamepad users land on the first room when one first shows up, or when the focused row was
+	# replaced by a refresh. Old rows are still children until freed, so new rows are the last ones.
+	if rooms.is_empty() or DisplayServer.is_touchscreen_available():
+		return
+	var first: Control = %Rooms.get_child(%Rooms.get_child_count() - rooms.size())
+	var focus := get_viewport().gui_get_focus_owner()
+	var lost_focus := focus == null or (focus.get_parent() == %Rooms and focus.is_queued_for_deletion())
+	if lost_focus or not _focused_first_room:
+		_focused_first_room = true
+		first.grab_focus.call_deferred()
 
 
 func _join_typed() -> void:

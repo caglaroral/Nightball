@@ -39,6 +39,9 @@ func _ready() -> void:
 	Fx.juice_buttons(self)
 	Fx.enter(%Content)
 	Sfx.set_crowd(false)
+	# Gives keyboard and gamepad users a starting point for navigation.
+	if not DisplayServer.is_touchscreen_available():
+		(%StartButton if _session.is_host() else %LeaveButton).grab_focus.call_deferred()
 
 
 func _join_hint() -> String:

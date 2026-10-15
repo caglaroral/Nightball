@@ -32,6 +32,9 @@ static func _scale_to(control: Control, value: float, duration: float) -> void:
 ## underneath it. Call every frame: slides content (anchored to the full screen) up until the
 ## focused text field sits just above the keyboard, and back down when it closes.
 static func follow_keyboard(content: Control, delta: float) -> void:
+	# Desktop has no on-screen keyboard (and asking for its height logs a warning).
+	if not DisplayServer.has_feature(DisplayServer.FEATURE_VIRTUAL_KEYBOARD):
+		return
 	var keyboard_px := DisplayServer.virtual_keyboard_get_height()
 	# Nothing to undo; also leaves the screen's slide-in animation alone.
 	if keyboard_px <= 0 and content.position.y >= -0.5:

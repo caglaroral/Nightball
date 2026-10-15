@@ -24,6 +24,8 @@ func _ready() -> void:
 	_touch_mode = DisplayServer.is_touchscreen_available()
 	touch.visible = _touch_mode
 	%Hint.visible = not _touch_mode
+	if Settings.has_gamepad():
+		%Hint.text = "Move: left stick      Kick: A, X or RB      Leave: Back"
 	%ExitButton.text = "End match" if _session.is_host() else "Leave"
 	%ExitButton.pressed.connect(_exit)
 	%NameTags.field = field
@@ -214,7 +216,7 @@ func _to_menu(message: String) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
+	if event.is_action_pressed("leave_match"):
 		_exit()
 
 

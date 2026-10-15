@@ -102,7 +102,8 @@ func _update_sound_label() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
+	# Keyboard only: a gamepad's B button should not close the game.
+	if event is InputEventKey and event.is_action_pressed("ui_cancel"):
 		get_tree().quit()
 
 

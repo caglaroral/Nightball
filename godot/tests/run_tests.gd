@@ -19,6 +19,7 @@ func _initialize() -> void:
 		"test_big_field_goal",
 		"test_camera_stays_inside_field",
 		"test_field_choice_reaches_clients",
+		"test_gamepad_bindings",
 		"test_host_and_clients_play_a_match",
 		"test_client_gives_up_without_room",
 		"test_discovery_finds_local_room",
@@ -208,6 +209,45 @@ func test_camera_stays_inside_field() -> void:
 	var scale := cam.update(0.016, true, Vector2(-590, 0), Vector2(-590, 0), Vector2(1280, 650), big_extent, big_extent)
 	near(scale, minf(1280.0 / 848.0, 650.0 / 368.0), 1e-4, "follow scale shows the small-field area")
 	check(cam.centre.x - 1280.0 / scale / 2.0 >= -big_extent.x / 2.0 - 0.01, "left edge stays on the field")
+
+
+func test_gamepad_bindings() -> void:
+	# Autoloads do not run under -s, so install the bindings the Settings autoload would.
+	if not InputMap.has_action("kick"):
+		var settings: Node = load("res://scripts/autoload/settings.gd").new()
+		settings._bind_keys()
+		settings.free()
+	var stick := InputEventJoypadMotion.new()
+	stick.axis = JOY_AXIS_LEFT_X
+	stick.axis_value = -0.7
+	Input.parse_input_event(stick)
+	Input.flush_buffered_events()
+	var move := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	# 0.7 of travel past a 0.2 dead zone: (0.7 - 0.2) / 0.8.
+	near(move.x, -0.625, 0.01, "half-pushed stick moves at partial speed")
+	var centred := InputEventJoypadMotion.new()
+	centred.axis = JOY_AXIS_LEFT_X
+	Input.parse_input_event(centred)
+
+	var a := InputEventJoypadButton.new()
+	a.button_index = JOY_BUTTON_A
+	a.pressed = true
+	Input.parse_input_event(a)
+	Input.flush_buffered_events()
+	check(Input.is_action_pressed("kick"), "A kicks")
+	var released := InputEventJoypadButton.new()
+	released.button_index = JOY_BUTTON_A
+	Input.parse_input_event(released)
+	Input.flush_buffered_events()
+
+	var b := InputEventJoypadButton.new()
+	b.button_index = JOY_BUTTON_B
+	b.pressed = true
+	check(not b.is_action("leave_match"), "B does not leave a match")
+	var back := InputEventJoypadButton.new()
+	back.button_index = JOY_BUTTON_BACK
+	back.pressed = true
+	check(back.is_action("leave_match"), "Back leaves a match")
 
 
 # --- networking over real UDP sockets on this machine ------------------------
